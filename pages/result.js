@@ -3,38 +3,40 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { supabase } from './supabaseClient';
 
-export default function Result() {
+const Result = () => {
   const router = useRouter();
   const { planet, symbol, code, message } = router.query;
 
+  // Simulate a test user ID (replace with real auth later)
+  const user_id = '00000000-0000-0000-0000-000000000000';
+
   useEffect(() => {
-    // Only run if all values exist
     if (planet && symbol && code && message) {
-      const saveResult = async () => {
+      const saveToSupabase = async () => {
         const { data, error } = await supabase.from('cosmic_logs').insert([
           {
-            user_id: 'anonymous', // Replace with real user ID when auth is added
-            date: new Date().toISOString().split('T')[0],
+            user_id,
             planet,
             symbol,
             code,
             message,
+            date: new Date().toISOString().split('T')[0], // YYYY-MM-DD
           },
         ]);
 
         if (error) {
-          console.error('❌ Error saving to Supabase:', error.message);
+          console.error('❌ Error saving log:', error);
         } else {
           console.log('✅ Cosmic log saved:', data);
         }
       };
 
-      saveResult();
+      saveToSupabase();
     }
   }, [planet, symbol, code, message]);
 
   return (
-    <div style={{ background: 'black', color: 'white', minHeight: '100vh', padding: '2rem' }}>
+    <div style={{ background: 'black', color: 'white', padding: '2rem' }}>
       <h1>Your Signal Has Arrived</h1>
       <p><strong>Planet:</strong> {planet}</p>
       <p><strong>Symbol:</strong> {symbol}</p>
@@ -45,4 +47,6 @@ export default function Result() {
       <a href="/learn" style={{ color: 'aqua' }}>Begin Your Learning Path →</a>
     </div>
   );
-}
+};
+
+export default Result;
