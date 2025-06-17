@@ -1,54 +1,67 @@
-import { useRouter } from 'next/router';
-
-const symbols = {
-  focused: {
-    planet: 'Mars',
-    symbol: 'Silent Falcon',
-    code: 'MARS-04-FALC',
-    message: 'Move with clarity and fire today.'
-  },
-  lost: {
-    planet: 'Neptune',
-    symbol: 'Shadow Bloom',
-    code: 'NEP-07-BLOOM',
-    message: 'Silence reveals your path. Trust stillness.'
-  },
-  confident: {
-    planet: 'Jupiter',
-    symbol: 'Solar Lion',
-    code: 'JUP-05-LION',
-    message: 'Lead the way, others will follow your flame.'
-  },
-  dreaming: {
-    planet: 'Venus',
-    symbol: 'Whisper Bloom',
-    code: 'VEN-09-BLOOM',
-    message: 'Softness is your shield. Let beauty guide.'
-  }
-};
+import { useEffect, useState } from 'react'
+import { supabase } from './supabaseClient'
 
 export default function Result() {
-  const router = useRouter();
-  const { mood } = router.query;
-  const result = symbols[mood] || {};
+  const [planet, setPlanet] = useState('Neptune')
+  const [symbol, setSymbol] = useState('Silent Falcon')
+  const [code, setCode] = useState('NEP-07-FALC')
+  const [message, setMessage] = useState('Today is not for movement. It is for vision.')
+  const [status, setStatus] = useState('')
+
+  const saveLog = async () => {
+    const { data, error } = await supabase
+      .from('cosmic_logs')
+      .insert([
+        {
+          user_id: 'test-user-id', // replace with real user_id later
+          date: new Date().toISOString().split('T')[0],
+          planet,
+          symbol,
+          code,
+          message,
+        },
+      ])
+
+    if (error) {
+      console.error('Save failed:', error)
+      setStatus('❌ Failed to save transmission.')
+    } else {
+      console.log('Saved:', data)
+      setStatus('✅ Transmission saved to the stars.')
+    }
+  }
 
   return (
     <div style={{
       backgroundColor: 'black',
       color: 'white',
+      height: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
       padding: '20px',
-      height: '100vh'
+      textAlign: 'center',
     }}>
       <h1>Your Signal Has Arrived</h1>
-      <h2>Planet: {result.planet}</h2>
-      <h2>Symbol: {result.symbol}</h2>
-      <h3>Code: {result.code}</h3>
-      <p>{result.message}</p>
+      <p><strong>Planet:</strong> {planet}</p>
+      <p><strong>Symbol:</strong> {symbol}</p>
+      <p><strong>Code:</strong> {code}</p>
+      <p><strong>Message:</strong> {message}</p>
 
-      <br />
-      <a href="/learn" style={{ color: '#00ffff' }}>
-        Begin Your Learning Path →
-      </a>
+      <button onClick={saveLog} style={{
+        marginTop: '20px',
+        backgroundColor: '#00ffff',
+        color: 'black',
+        padding: '10px 20px',
+        border: 'none',
+        borderRadius: '5px',
+        cursor: 'pointer'
+      }}>
+        Save This Transmission
+      </button>
+
+      {status && <p style={{ marginTop: '10px' }}>{status}</p>}
     </div>
-  );
+  )
 }
