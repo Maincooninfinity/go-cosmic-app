@@ -1,42 +1,40 @@
-// pages/result.js
 import { useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { supabase } from './supabaseClient';
+import { supabase } from './supabaseClient'; // make sure the path is correct
+import Link from 'next/link';
 
-const Result = () => {
-  const router = useRouter();
-  const { planet, symbol, code, message } = router.query;
-
-  // Simulate a test user ID (replace with real auth later)
-  const user_id = '00000000-0000-0000-0000-000000000000';
+export default function ResultPage() {
+  const planet = 'Mars';
+  const symbol = 'Silent Falcon';
+  const code = 'MARS-04-FALC';
+  const message = 'Move with clarity and fire today.';
 
   useEffect(() => {
-    if (planet && symbol && code && message) {
-      const saveToSupabase = async () => {
-        const { data, error } = await supabase.from('cosmic_logs').insert([
-          {
-            user_id,
-            planet,
-            symbol,
-            code,
-            message,
-            date: new Date().toISOString().split('T')[0], // YYYY-MM-DD
-          },
-        ]);
+    const saveToSupabase = async () => {
+      const today = new Date().toISOString().split("T")[0];
 
-        if (error) {
-          console.error('❌ Error saving log:', error);
-        } else {
-          console.log('✅ Cosmic log saved:', data);
+      const { error } = await supabase.from('cosmic_logs').insert([
+        {
+          // user_id: 'some-user-id', // Uncomment & replace if using Supabase Auth
+          date: today,
+          planet,
+          symbol,
+          code,
+          message,
         }
-      };
+      ]);
 
-      saveToSupabase();
-    }
-  }, [planet, symbol, code, message]);
+      if (error) {
+        console.error('Failed to save cosmic log:', error.message);
+      } else {
+        console.log('Cosmic log saved successfully.');
+      }
+    };
+
+    saveToSupabase();
+  }, []);
 
   return (
-    <div style={{ background: 'black', color: 'white', padding: '2rem' }}>
+    <div style={{ backgroundColor: 'black', color: 'white', height: '100vh', padding: '2rem' }}>
       <h1>Your Signal Has Arrived</h1>
       <p><strong>Planet:</strong> {planet}</p>
       <p><strong>Symbol:</strong> {symbol}</p>
@@ -44,9 +42,9 @@ const Result = () => {
       <p>{message}</p>
 
       <br />
-      <a href="/learn" style={{ color: 'aqua' }}>Begin Your Learning Path →</a>
+      <Link href="/learn">
+        <a style={{ color: 'cyan' }}>Begin Your Learning Path →</a>
+      </Link>
     </div>
   );
-};
-
-export default Result;
+}
