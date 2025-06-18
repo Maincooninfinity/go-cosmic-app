@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import supabase from './supabaseClient'; // ✅ Correct relative path
+import supabase from './supabaseClient'; //
 
 export default function Home() {
   useEffect(() => {
