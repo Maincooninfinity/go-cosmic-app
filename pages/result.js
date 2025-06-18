@@ -1,11 +1,12 @@
-import { useEffect } from 'react'
-import supabase from '../supabaseClient
+import { useEffect } from 'react';
+import supabase from './supabaseClient'; // ✅ Correct relative path
+
 export default function Home() {
   useEffect(() => {
     const testInsert = async () => {
       const { data, error } = await supabase.from('symbols').insert([
         {
-          user_ref: '00000000-0000-0000-0000-000000000000', // fake for testing
+          user_ref: '00000000-0000-0000-0000-000000000000', // ✅ Dummy user_ref for testing
           planet: 'Mars',
           symbol: 'Silent Falcon',
           code: 'MARS-04-FALC',
@@ -28,5 +29,5 @@ export default function Home() {
       <h1>Go Cosmic</h1>
       <p>Testing Supabase insert…</p>
     </div>
-  )
+  );
 }
