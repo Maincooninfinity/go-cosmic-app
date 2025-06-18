@@ -1,34 +1,33 @@
-import { supabase } from './supabaseClient'
 import { useEffect } from 'react'
+import { supabase } from '../supabaseClient'
 
-export default function Result() {
+export default function Home() {
   useEffect(() => {
-    const insertLog = async () => {
-      const { error } = await supabase.from('cosmic_logs').insert([
+    const testInsert = async () => {
+      const { data, error } = await supabase.from('symbols').insert([
         {
-          user_id: '00000000-0000-0000-0000-000000000000', // static for now
+          user_ref: '00000000-0000-0000-0000-000000000000', // fake for testing
           planet: 'Mars',
           symbol: 'Silent Falcon',
           code: 'MARS-04-FALC',
-          message: 'Move with clarity and fire today.',
-          date: new Date().toISOString().split('T')[0]
+          message: 'Move with clarity and fire today.'
         }
-      ])
-      if (error) console.error('Insert failed:', error)
-      else console.log('Insert successful')
-    }
+      ]);
 
-    insertLog()
-  }, [])
+      if (error) {
+        console.error('Insert failed:', error);
+      } else {
+        console.log('Insert success:', data);
+      }
+    };
+
+    testInsert();
+  }, []);
 
   return (
-    <div style={{ padding: '2rem', color: 'white', background: 'black' }}>
-      <h1>Your Signal Has Arrived</h1>
-      <p><strong>Planet:</strong> Mars</p>
-      <p><strong>Symbol:</strong> Silent Falcon</p>
-      <p><strong>Code:</strong> MARS-04-FALC</p>
-      <p>Move with clarity and fire today.</p>
-      <a href="/learn" style={{ color: 'cyan' }}>Begin Your Learning Path →</a>
+    <div>
+      <h1>Go Cosmic</h1>
+      <p>Testing Supabase insert…</p>
     </div>
   )
 }
