@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { supabase } from '../SupabaseClient.js';
+import { supabase } from '../supabase.js';
 export default function Home() {
   useEffect(() => {
     const testInsert = async () => {
